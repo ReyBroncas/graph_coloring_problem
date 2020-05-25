@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 def matrix_symetry_check(matrix):
     """
     (list) -> bool
@@ -9,12 +10,13 @@ def matrix_symetry_check(matrix):
     """
     symetry_flag = True
 
-    for rows in range(0,len(matrix)):
-        for col in range(0,len(matrix)):
+    for rows in range(0, len(matrix)):
+        for col in range(0, len(matrix)):
             if matrix[rows][col] != matrix[col][rows]:
                 symetry_flag = False
 
     return symetry_flag
+
 
 def read_from_file():
     """
@@ -33,22 +35,24 @@ def read_from_file():
         line_list = line.split(",")
         line_list = [int(elm) for elm in line_list]
         matrix.append(line_list)
-        for vertice in range(1,len(line_list)+1):
-             if line_list[vertice-1] == 1:
-                 if vertex in adj_vertices_dict.keys():
-                     adj_vertices_dict[vertex][0].append(vertice)
-                 else:
-                     adj_vertices_dict[vertex] = [[vertice]]
+        for vertice in range(1, len(line_list)+1):
+            if line_list[vertice-1] == 1:
+                if vertex in adj_vertices_dict.keys():
+                    adj_vertices_dict[vertex][0].append(vertice)
+                else:
+                    adj_vertices_dict[vertex] = [[vertice]]
         vertex += 1
 
     mf.close()
-    for key,value in adj_vertices_dict.items():
+    for key, value in adj_vertices_dict.items():
         adj_vertices_dict[key].append(0)
-        adj_vertices_dict[key].append([0 for zero in range(0,len(adj_vertices_dict[key][0]))])
+        adj_vertices_dict[key].append(
+            [0 for zero in range(0, len(adj_vertices_dict[key][0]))])
     if matrix_symetry_check(matrix) == True:
         return adj_vertices_dict
     else:
         return None
+
 
 def safeCheck(c, v, vDict):
     """
@@ -84,11 +88,11 @@ def graph_color(v, vDict, depth=1, v_real=set(), color_c=False):
         if not color_c:
             sync(v, vDict)
         v_real.add(v)
-        for c in range(vDict[v][1]+1, 4):
+        for c in range(vDict[v][1]+1, 5):
             if safeCheck(c, v, vDict):
                 vDict[v][1] = c
                 break
-        if vDict[v][1] == 4:
+        if vDict[v][1] == 5:
             vDict[v][1] = 0
             v_real.remove(v)
             return vDict, True
@@ -110,18 +114,19 @@ def color_graph(vertex_color_dict, adj_vertices_dict):
     .. and draws a colored graph using matplotlib and networkx libraries.
     """
 
-    colors_dict = {1:'r',2:'g',3:'b'}
+    colors_dict = {1: 'orange', 2: 'yellow', 3: 'red', 4: 'purple'}
     G = nx.Graph()
 
-    for vertice,adjacent_vertices in adj_vertices_dict.items():
+    for vertice, adjacent_vertices in adj_vertices_dict.items():
         G.add_node(vertice)
         G.nodes[vertice]['color'] = colors_dict[vertex_color_dict[vertice]]
         for i in adjacent_vertices:
             G.add_edge(vertice, i)
 
     color = [node[1]['color'] for node in G.nodes(data=True)]
-    nx.draw_networkx(G, with_labels = True, node_color=color, node_size=700)
+    nx.draw_networkx(G, with_labels=True, node_color=color, node_size=700)
     plt.show()
+
 
 def form_base_colored_dict(colored_dict_unmod):
     """
@@ -142,7 +147,7 @@ def form_base_colored_dict(colored_dict_unmod):
     if 0 in final_colored_dict.values():
         return None
     else:
-        return final_colored_dict,final_adj_vertex_dict
+        return final_colored_dict, final_adj_vertex_dict
 
 
 if __name__ == "__main__":
@@ -151,10 +156,10 @@ if __name__ == "__main__":
         adjacent_dict = read_from_file()
         colored_dict = graph_color(1, adjacent_dict)
         if form_base_colored_dict(colored_dict[0]) != None:
-            final_colored_dict,final_adj_vertex_dict = form_base_colored_dict(colored_dict[0])
-            color_graph(final_colored_dict,final_adj_vertex_dict)
+            final_colored_dict, final_adj_vertex_dict = form_base_colored_dict(
+                colored_dict[0])
+            color_graph(final_colored_dict, final_adj_vertex_dict)
         else:
             print("\n\n\tGraph can't not be colored in 3 colors.\n\n")
     else:
         print("\n\n\t\tInvalid matrix!\n\n")
-
