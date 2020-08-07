@@ -2,6 +2,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 # EDITED BY MARK
 
+
+# This was edited on a new branch
+
 def matrix_symetry_check(matrix: list) -> bool:
     """
     Function gets a 2D-array (matrix) and check whether it is symetrical.
